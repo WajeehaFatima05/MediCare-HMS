@@ -1,0 +1,29 @@
+
+# Data files (contains user information)
+*.json
+hospital_data.json
+test_data.json
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environment
+venv/
+env/
+ENV/
+
+# IDE settings
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files (optional - you can include these if you want)
+test_*.py
