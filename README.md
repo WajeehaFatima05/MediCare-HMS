@@ -1,9 +1,9 @@
 
-# 🏥 MediCare Hospital Management System
+#  MediCare Hospital Management System
 
 A comprehensive Object-Oriented Hospital Management System built with Python.
 
-## 📋 Features
+##  Features
 
 - **Patient Management**: Add, view, update, and delete patient records
 - **Doctor Management**: Manage doctor information and specializations
@@ -11,7 +11,7 @@ A comprehensive Object-Oriented Hospital Management System built with Python.
 - **Billing System**: Generate and track patient bills with payment status
 - **Reports & Statistics**: View comprehensive system analytics
 
-## 🚀 How to Run
+## How to Run
 ```bash
 python main.py
 ```
@@ -21,7 +21,7 @@ python main.py
 - Python 3.7 or higher
 - No external libraries required (uses only Python standard library)
 
-## 📁 Project Structure
+## Project Structure
 ```
 MediCare_HMS/
 ├── person.py              # Base Person class
@@ -34,22 +34,17 @@ MediCare_HMS/
 └── main.py                # Entry point
 ```
 
-## 🎯 OOP Concepts Implemented
+## OOP Concepts Implemented
 
-- ✅ **Encapsulation**: Private attributes with property decorators
-- ✅ **Inheritance**: Person base class extended by Patient and Doctor
-- ✅ **Polymorphism**: Overridden display methods
-- ✅ **Abstraction**: Clean, modular interfaces
-- ✅ **Data Persistence**: JSON-based storage system
+-  **Encapsulation**: Private attributes with property decorators
+-  **Inheritance**: Person base class extended by Patient and Doctor
+-  **Polymorphism**: Overridden display methods
+-  **Abstraction**: Clean, modular interfaces
+-  **Data Persistence**: JSON-based storage system
 
-## 💾 Data Storage
+##  Data Storage
 
 All data is automatically saved to `hospital_data.json` file and persists between sessions.
 
-## 👨‍💻 Author
 
-[Your Name]
 
-## 📄 License
-
-This project is open source and available under the MIT License.
