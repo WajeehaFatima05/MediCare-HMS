@@ -16,7 +16,7 @@ A comprehensive Object-Oriented Hospital Management System built with Python.
 python main.py
 ```
 
-## 📦 Requirements
+## Requirements
 
 - Python 3.7 or higher
 - No external libraries required (uses only Python standard library)
