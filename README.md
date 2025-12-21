@@ -32,7 +32,7 @@ MediCare_HMS/
 ├── billing.py             # Billing and payment management
 ├── hospital_system.py     # Main system logic
 ├── console_interface.py   # Console user interface
-└── main.py                # Entry point
+└── guimain.py                # Entry point
 ```
 
 ## OOP Concepts Implemented
