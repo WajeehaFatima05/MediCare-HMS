@@ -13,7 +13,8 @@ A comprehensive Object-Oriented Hospital Management System built with Python.
 
 ## How to Run
 ```bash
-python main.py
+python guimain.py
+
 ```
 
 ## Requirements
