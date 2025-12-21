@@ -1,4 +1,3 @@
-
 import tkinter as tk
 from tkinter import ttk, messagebox, simpledialog
 from hospital_system import HospitalSystem
@@ -82,7 +81,7 @@ class MediCareGUI:
                 f"Total Revenue:       ${s['total_revenue']:.2f}")
         self.stats_label.config(text=text)
 
-    # ==================== PATIENTS (With Update/Delete) ====================
+    # ==================== PATIENTS ====================
     def init_patient_tab(self):
         f = tk.LabelFrame(self.tab_patients, text=" Register Patient ", bg=self.COLOR_WHITE, padx=10, pady=10)
         f.pack(fill="x", padx=20, pady=10)
@@ -97,7 +96,6 @@ class MediCareGUI:
 
         self.p_tree = self.create_tree(self.tab_patients, ("ID", "Name", "Age", "Gender", "Disease", "Admitted"))
         
-        # Right-Click Menu for Update/Delete
         self.p_menu = tk.Menu(self.root, tearoff=0)
         self.p_menu.add_command(label="Update Disease", command=self.update_patient_ui)
         self.p_menu.add_separator()
@@ -118,31 +116,80 @@ class MediCareGUI:
         selected = self.p_tree.selection()
         if not selected: return
         p_id = self.p_tree.item(selected[0])['values'][0]
-        new_disease = simpledialog.askstring("Update", f"Enter new disease for Patient ID {p_id}:")
-        if new_disease:
-            # Note: Ensure your hospital_system.py has an update_patient method
-            # If not, you can manually modify the list then save.
+        new_dis = simpledialog.askstring("Update", "Enter new disease:")
+        if new_dis:
             for p in self.system._patients:
                 if p.person_id == p_id:
-                    p.disease = new_disease
+                    p.disease = new_dis
                     self.system.save_data()
-                    messagebox.showinfo("Success", "Record Updated")
                     self.refresh_all()
 
     def delete_patient_logic(self):
         selected = self.p_tree.selection()
         if not selected: return
         p_id = self.p_tree.item(selected[0])['values'][0]
-        if messagebox.askyesno("Confirm", "Delete this patient record?"):
+        if messagebox.askyesno("Confirm", "Delete Patient?"):
             self.system._patients = [p for p in self.system._patients if p.person_id != p_id]
             self.system.save_data()
             self.refresh_all()
 
-    # ==================== DOCTORS & APPOINTMENTS ====================
+    # ==================== DOCTORS (NEW FUNCTIONALITY) ====================
     def init_doctor_tab(self):
-        self.d_tree = self.create_tree(self.tab_doctors, ("ID", "Name", "Specialization", "Availability"))
+        # Form to Add Doctor
+        f = tk.LabelFrame(self.tab_doctors, text=" Register Doctor ", bg=self.COLOR_WHITE, padx=10, pady=10)
+        f.pack(fill="x", padx=20, pady=10)
+        
+        self.d_name = self.create_input(f, "Name:", 0, 0)
+        self.d_age = self.create_input(f, "Age:", 0, 2)
+        self.d_spec = self.create_input(f, "Specialty:", 0, 4)
+        self.d_con = self.create_input(f, "Contact:", 1, 0)
+        self.d_avail = self.create_input(f, "Availability:", 1, 2)
+
+        tk.Button(f, text="Add Doctor", command=self.add_doctor_logic, bg="#28a745", fg="white").grid(row=1, column=5, padx=10)
+
+        # Table
+        self.d_tree = self.create_tree(self.tab_doctors, ("ID", "Name", "Specialty", "Availability", "Contact"))
+        
+        # Menu for Update/Delete
+        self.d_menu = tk.Menu(self.root, tearoff=0)
+        self.d_menu.add_command(label="Update Availability", command=self.update_doctor_ui)
+        self.d_menu.add_separator()
+        self.d_menu.add_command(label="Delete Doctor", command=self.delete_doctor_logic, foreground="red")
+        
+        self.d_tree.bind("<Button-3>", lambda e: self.d_menu.post(e.x_root, e.y_root))
         self.refresh_d_list()
 
+    def add_doctor_logic(self):
+        try:
+            # Note: Ensure your hospital_system.py has an add_doctor method
+            self.system.add_doctor(self.d_name.get(), int(self.d_age.get()), "M/F", 
+                                   self.d_con.get(), self.d_spec.get(), self.d_avail.get())
+            messagebox.showinfo("Success", "Doctor Registered")
+            self.refresh_all()
+        except: messagebox.showerror("Error", "Check Inputs")
+
+    def update_doctor_ui(self):
+        selected = self.d_tree.selection()
+        if not selected: return
+        d_id = self.d_tree.item(selected[0])['values'][0]
+        new_avail = simpledialog.askstring("Update", "Enter new availability (e.g. Mon-Fri):")
+        if new_avail:
+            for d in self.system._doctors:
+                if d.person_id == d_id:
+                    d._availability = new_avail # Accessing private member for quick update
+                    self.system.save_data()
+                    self.refresh_all()
+
+    def delete_doctor_logic(self):
+        selected = self.d_tree.selection()
+        if not selected: return
+        d_id = self.d_tree.item(selected[0])['values'][0]
+        if messagebox.askyesno("Confirm", "Delete Doctor?"):
+            self.system._doctors = [d for d in self.system._doctors if d.person_id != d_id]
+            self.system.save_data()
+            self.refresh_all()
+
+    # ==================== APPOINTMENTS ====================
     def init_appointment_tab(self):
         f = tk.LabelFrame(self.tab_appts, text=" Schedule Appointment ", bg=self.COLOR_WHITE, padx=10, pady=10)
         f.pack(fill="x", padx=20, pady=10)
@@ -197,7 +244,7 @@ class MediCareGUI:
         tree = ttk.Treeview(parent, columns=cols, show='headings')
         for col in cols:
             tree.heading(col, text=col)
-            tree.column(col, width=100, anchor="center")
+            tree.column(col, width=120, anchor="center")
         tree.pack(fill="both", expand=True, padx=20, pady=10)
         return tree
 
@@ -216,7 +263,7 @@ class MediCareGUI:
     def refresh_d_list(self):
         for i in self.d_tree.get_children(): self.d_tree.delete(i)
         for d in self.system.get_all_doctors():
-            self.d_tree.insert("", "end", values=(d.person_id, d.name, d.specialization, d.availability))
+            self.d_tree.insert("", "end", values=(d.person_id, d.name, d.specialization, d.availability, d.contact))
 
     def refresh_a_list(self):
         for i in self.a_tree.get_children(): self.a_tree.delete(i)
